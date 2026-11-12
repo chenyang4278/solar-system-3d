@@ -13,6 +13,9 @@ import { LoadingOverlay } from "./components/UI/LoadingScreen";
 const PlanetInfo = lazy(() =>
   import("./components/UI/PlanetInfo").then((m) => ({ default: m.PlanetInfo }))
 );
+const PlanetComparison = lazy(() =>
+  import("./components/UI/PlanetComparison").then((m) => ({ default: m.PlanetComparison }))
+);
 const PlanetNavigation = lazy(() =>
   import("./components/UI/PlanetNavigation").then((m) => ({ default: m.PlanetNavigation }))
 );
@@ -25,7 +28,14 @@ import { getOrbitRadius } from "./utils/orbitUtils";
 import type { Planet as PlanetType } from "./types/planet";
 
 function App() {
-  const { selectedPlanet, selectPlanet, deselectPlanet } = usePlanetSelection();
+  const {
+    selectedPlanet,
+    comparedPlanet,
+    selectPlanet,
+    deselectPlanet,
+    compareWith,
+    clearComparison,
+  } = usePlanetSelection();
   const [overviewTrigger, setOverviewTrigger] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   // Tracks whether the info panel is visible — decoupled from selection so
@@ -107,14 +117,38 @@ function App() {
           onOverview={handleOverview}
         />
         <div aria-live="polite" aria-atomic="true" className="sr-only">
-          {selectedPlanet ? `Viewing ${selectedPlanet.name}` : "Overview — all planets"}
+          {selectedPlanet && comparedPlanet
+            ? `Comparing ${selectedPlanet.name} with ${comparedPlanet.name}`
+            : selectedPlanet
+              ? `Viewing ${selectedPlanet.name}`
+              : "Overview — all planets"}
         </div>
         {/* Panel renders whenever a planet is selected AND panelVisible is true.
             On desktop the FAB is hidden so panelVisible stays true once set.
-            On mobile the FAB toggles panelVisible independently of selection. */}
-        {selectedPlanet && panelVisible && (
-          <PlanetInfo planet={selectedPlanet} onClose={handleDeselectPlanet} />
-        )}
+            On mobile the FAB toggles panelVisible independently of selection.
+            While a second planet is chosen, PlanetComparison replaces PlanetInfo.
+            Own Suspense boundary so loading a panel chunk doesn't blank the
+            navigation and time control above. */}
+        <Suspense fallback={null}>
+          {selectedPlanet && panelVisible && (
+            comparedPlanet ? (
+              <PlanetComparison
+                planet={selectedPlanet}
+                comparedPlanet={comparedPlanet}
+                planets={planetsToRender}
+                onChangeCompared={compareWith}
+                onClose={clearComparison}
+              />
+            ) : (
+              <PlanetInfo
+                planet={selectedPlanet}
+                planets={planetsToRender}
+                onCompare={compareWith}
+                onClose={handleDeselectPlanet}
+              />
+            )
+          )}
+        </Suspense>
         <TimeControl />
       </Suspense>
 

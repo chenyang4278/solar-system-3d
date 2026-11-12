@@ -1,40 +1,29 @@
 import { memo } from 'react';
 import type { Planet } from '../../types/planet';
+import { TYPE_LABELS, TYPE_ICONS, PHYSICAL_STATS, MOTION_STATS } from '../../utils/planetStats';
+import { ComparePicker } from './ComparePicker';
 import './PlanetInfo.css';
 
 interface PlanetInfoProps {
   /** Planet data to display, or null if no planet selected */
   planet: Planet | null;
+  /** Planets offered in the "Compare with…" dropdown */
+  planets: Planet[];
+  /** Callback when a planet is chosen for comparison */
+  onCompare: (planet: Planet) => void;
   /** Callback function when close button is clicked */
   onClose: () => void;
 }
-
-const TYPE_LABELS: Record<Planet['type'], string> = {
-  terrestrial: 'Terrestrial',
-  'gas-giant': 'Gas Giant',
-  'ice-giant': 'Ice Giant',
-  dwarf: 'Dwarf Planet',
-  star: 'Star',
-};
-
-const TYPE_ICONS: Record<Planet['type'], string> = {
-  terrestrial: '🌍',
-  'gas-giant': '🪐',
-  'ice-giant': '🔵',
-  dwarf: '⚫',
-  star: '⭐',
-};
 
 /**
  * PlanetInfo Component
  * Displays detailed information about a selected planet in a slide-out panel.
  */
-export const PlanetInfo = memo(({ planet, onClose }: PlanetInfoProps) => {
+export const PlanetInfo = memo(({ planet, planets, onCompare, onClose }: PlanetInfoProps) => {
   if (!planet) return null;
 
   const typeLabel = TYPE_LABELS[planet.type] ?? planet.type;
   const typeIcon = TYPE_ICONS[planet.type] ?? '🌑';
-  const distanceMkm = (planet.distanceFromSun / 1e6).toFixed(1);
 
   return (
     <div className="planet-info-panel" role="complementary" aria-label={`Info: ${planet.name}`}>
@@ -64,26 +53,25 @@ export const PlanetInfo = memo(({ planet, onClose }: PlanetInfoProps) => {
       </div>
 
       <div className="planet-info-content">
+        {/* Start a comparison */}
+        <ComparePicker
+          label="Compare with"
+          planets={planets}
+          excludeId={planet.id}
+          value=""
+          onSelect={onCompare}
+        />
+
         {/* Stats grid */}
         <section className="info-section">
           <h3 className="info-section__title">Physical Data</h3>
           <div className="info-grid">
-            <div className="info-item">
-              <label>Diameter</label>
-              <p>{planet.diameter.toLocaleString()} km</p>
-            </div>
-            <div className="info-item">
-              <label>Temperature</label>
-              <p>{planet.temperature} K</p>
-            </div>
-            <div className="info-item">
-              <label>Distance from Sun</label>
-              <p>{distanceMkm} M km</p>
-            </div>
-            <div className="info-item">
-              <label>Satellites</label>
-              <p>{planet.numberOfSatellites}</p>
-            </div>
+            {PHYSICAL_STATS.map((stat) => (
+              <div key={stat.key} className="info-item">
+                <label>{stat.label}</label>
+                <p>{stat.format(planet)}</p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -91,14 +79,12 @@ export const PlanetInfo = memo(({ planet, onClose }: PlanetInfoProps) => {
         <section className="info-section">
           <h3 className="info-section__title">Motion</h3>
           <div className="info-grid">
-            <div className="info-item">
-              <label>Rotation Speed</label>
-              <p>{planet.rotationSpeed.toFixed(4)} rad/s</p>
-            </div>
-            <div className="info-item">
-              <label>Orbit Speed</label>
-              <p>{planet.orbitSpeed.toFixed(4)}</p>
-            </div>
+            {MOTION_STATS.map((stat) => (
+              <div key={stat.key} className="info-item">
+                <label>{stat.label}</label>
+                <p>{stat.format(planet)}</p>
+              </div>
+            ))}
           </div>
         </section>
 

@@ -1,0 +1,103 @@
+/* Builds on the .planet-info-panel shell and sections in PlanetInfo.css. */
+
+/* Slightly wider than PlanetInfo so two value columns fit comfortably */
+.planet-info-panel.planet-info-panel--compare {
+  max-width: 480px;
+}
+
+/* ── Comparison table ── */
+/* Negative margin cancels the outer border-spacing so cells align with the panel padding */
+.compare-table {
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: var(--space-2);
+  margin: calc(-1 * var(--space-2));
+  width: calc(100% + 2 * var(--space-2));
+}
+
+.compare-table__corner {
+  width: 30%;
+}
+
+.compare-table__planet {
+  text-align: center;
+  vertical-align: bottom;
+  padding: var(--space-3) var(--space-2);
+  border-top: 2px solid var(--planet-color);
+  border-radius: var(--radius-md);
+  background: var(--color-white-05);
+}
+
+.compare-table__img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto var(--space-2);
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+.compare-table__name {
+  display: block;
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--planet-color);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--planet-color) 50%, transparent);
+  margin-bottom: var(--space-1);
+  overflow-wrap: anywhere;
+}
+
+.compare-table__label {
+  font-size: var(--text-xs);
+  color: var(--color-white-50);
+  font-weight: 600;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+}
+
+.compare-table__value {
+  background: var(--color-white-05);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-2);
+  font-size: var(--text-base);
+  color: var(--color-white);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .planet-info-panel.planet-info-panel--compare {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .compare-table__corner {
+    width: 28%;
+  }
+
+  .compare-table__img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .compare-table__name {
+    font-size: var(--text-base);
+  }
+
+  .compare-table__value {
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-1);
+  }
+
+  .compare-table__label {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+}

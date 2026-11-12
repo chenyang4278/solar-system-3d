@@ -104,6 +104,33 @@ on mobile and a capped pixel ratio.
 
 <div align="center"><img src="public/favicon.svg" width="28" alt="" /></div>
 
+## Planet Comparison Mode
+
+Compare two planets side by side: their names, types, diameter, temperature, distance from the Sun and
+number of moons. The comparison panel replaces the planet info panel and uses the same data, styles and
+mobile bottom-sheet layout.
+
+**How to use it**
+
+1. Select a planet: click it in the scene, or pick it from the sidebar (or the 🪐 drawer on mobile).
+2. In the info panel, open **Compare with…** and choose a second planet.
+3. Use the dropdown at the top of the comparison panel to switch the second planet.
+4. Press **✕** to close the comparison and return to the selected planet's info panel. **Overview** or
+   clicking empty space clears both planets.
+
+The camera keeps following the first planet. Selecting another planet keeps the comparison open. If you
+select the planet you were comparing against, it becomes the main planet and the panel returns to its info
+view. On mobile, the floating button hides and shows the comparison panel just like the info panel.
+
+<table>
+<tr>
+<td width="76%" valign="top"><img width="100%" alt="Desktop: Earth compared with Jupiter in the side panel, with the 3D scene and planet list on the left" src="docs/screenshots/comparison-desktop.png" /></td>
+<td width="24%" valign="top"><img width="100%" alt="Mobile: Earth compared with Jupiter in the bottom sheet" src="docs/screenshots/comparison-mobile.png" /></td>
+</tr>
+</table>
+
+<div align="center"><img src="public/favicon.svg" width="28" alt="" /></div>
+
 ## Tech stack
 
 | Technology | Version | Role |
@@ -151,13 +178,13 @@ solar-system-3d/
 ├── src/
 │   ├── components/
 │   │   ├── Scene/          # 3D: Canvas, Sun, Planet, Satellite, Orbit, Lights, CameraController
-│   │   └── UI/             # Header, PlanetInfo, PlanetNavigation, PlanetDrawer, TimeControl, FAB…
+│   │   └── UI/             # Header, PlanetInfo, PlanetComparison, PlanetNavigation, PlanetDrawer, TimeControl, FAB…
 │   ├── context/            # SimulationContext: time scale and pause state
 │   ├── data/planets.ts     # Planet and moon data (size, distance, tilt, texture, fun facts…)
 │   ├── hooks/              # useCameraAnimation, usePlanetSelection, useIsMobile
 │   ├── styles/global.css   # Design tokens (CSS custom properties)
 │   ├── types/              # Planet TypeScript types
-│   └── utils/              # Orbit helpers
+│   └── utils/              # Orbit helpers, shared planet stat formatting
 └── vite.config.ts
 ```
 
@@ -173,6 +200,7 @@ The app is split into chunks so the browser caches vendor libraries independentl
 | `vendor-r3f` | ~304 kB | Three.js + R3F + Drei — long-term cached |
 | `index` | ~6 kB | App entry point |
 | `PlanetInfo` | ~1 kB | Lazy-loaded on first planet selection |
+| `PlanetComparison` | ~1 kB | Lazy-loaded on first comparison |
 | `PlanetNavigation` | ~1 kB | Lazy-loaded on first render |
 | `TimeControl` | ~1 kB | Lazy-loaded on first render |
 
@@ -200,6 +228,10 @@ pre-React loading indicator for an instant first paint.
 Planet, Sun and moon textures from [Solar System Scope](https://www.solarsystemscope.com/textures/) (CC BY 4.0) and USGS/NASA (public domain) — see [`public/textures/README.md`](public/textures/README.md).
 
 Code under the [MIT](LICENSE) license © Sanghel González.
+
+This is a fork of [Sanghel/solar-system-3d](https://github.com/Sanghel/solar-system-3d), the original project
+by Sanghel González. Planet Comparison Mode was added in this fork; all other features, the design and the
+original license and attribution come from the original project.
 
 <div align="center">
 
